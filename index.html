@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>少年サッカー8人制戦術ボード</title>
+    <title>８人制サッカー戦術ボード</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* The main container for the application */
@@ -139,32 +139,32 @@
     </style>
 </head>
 <body class="bg-gray-900 min-h-screen p-4 flex flex-col items-center">
-    <h1 class="text-3xl font-bold text-white mb-6 text-center">少年サッカー8人制戦術ボード</h1>
+    <h1 class="text-3xl font-bold text-white mb-6 text-center">８人制サッカー戦術ボード</h1>
     
     <!-- Main Layout Container -->
     <div class="w-full max-w-6xl mx-auto">
         <!-- Control Panel -->
         <div class="bg-gray-800 rounded-lg p-4 mb-6">
-            <div class="flex justify-between items-center cursor-pointer" onclick="toggleControlPanel()">
-                 <h2 class="text-xl font-bold text-white">コントロールパネル</h2>
-                 <svg id="panel-chevron" class="w-6 h-6 text-white transition-transform transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <div class="flex flex-wrap gap-4 items-center justify-between mb-4">
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="resetCurrentFormation()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium">配置リセット</button>
+                    <button onclick="toggleSubstitution()" id="subBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">選手交代モード</button>
+                    <button onclick="showPlayerManager()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium">選手管理</button>
+                    <button onclick="toggleOpponent()" id="toggleOpponentBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium">相手を非表示</button>
+                </div>
+                <div class="text-white text-sm">
+                    <span class="bg-blue-600 px-2 py-1 rounded mr-2">青: 自チーム</span>
+                    <span class="bg-red-600 px-2 py-1 rounded">赤: 相手チーム</span>
+                </div>
             </div>
-            <div id="collapsible-panel" class="collapsible-content expanded">
-                <div class="pt-4">
-                    <div class="flex flex-wrap gap-4 items-center justify-between mb-4">
-                        <div class="flex gap-2 flex-wrap">
-                            <button onclick="resetCurrentFormation()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium">配置リセット</button>
-                            <button onclick="toggleSubstitution()" id="subBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">選手交代モード</button>
-                            <button onclick="showPlayerManager()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium">選手管理</button>
-                            <button onclick="toggleOpponent()" id="toggleOpponentBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium">相手を非表示</button>
-                        </div>
-                        <div class="text-white text-sm">
-                            <span class="bg-blue-600 px-2 py-1 rounded mr-2">青: 自チーム</span>
-                            <span class="bg-red-600 px-2 py-1 rounded">赤: 相手チーム</span>
-                        </div>
-                    </div>
-                    <!-- Formation Controls -->
-                    <div class="mt-4 pt-4 border-t border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Collapsible Formation Controls -->
+            <div class="border-t border-gray-700 pt-4">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleControlPanel()">
+                     <h3 class="text-lg font-bold text-white">フォーメーション設定</h3>
+                     <svg id="panel-chevron" class="w-6 h-6 text-white transition-transform transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="collapsible-panel" class="collapsible-content expanded">
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <h3 class="text-white font-semibold mb-2 text-center">自チームフォーメーション</h3>
                             <div id="home-formation-controls" class="flex gap-2 justify-center flex-wrap">
@@ -770,7 +770,6 @@
             document.getElementById('playerForm').classList.remove('hidden');
         }
         
-        // ★修正点: savePlayer関数を更新
         function savePlayer() {
             const name = document.getElementById('playerName').value.trim();
             const position = document.getElementById('playerPosition').value;
@@ -781,8 +780,7 @@
             if (editingPlayer) {
                 players[editingPlayer].name = name;
                 players[editingPlayer].position = position;
-                // アイコンの表示を直接更新
-                updatePlayerOnBoard(editingPlayer, name, position); 
+                updatePlayerOnBoard(editingPlayer); 
             } else {
                 const newPlayerId = 'player_' + Date.now();
                 players[newPlayerId] = { name: name, position: position };
@@ -798,7 +796,6 @@
             savePlayersToStorage();
             updatePlayerList();
             cancelPlayerForm();
-            // フォーメーションを再適用して、正しい選手がスターターになるようにする
             setFormation(currentFormation); 
         }
 
@@ -813,13 +810,13 @@
             });
         }
         
-        // ★追加: 選手情報をアイコンに反映させる独立した関数
-        function updatePlayerOnBoard(playerId, name, position) {
+        function updatePlayerOnBoard(playerId) {
             const playerElement = document.querySelector(`[data-player="${playerId}"]`);
             if (playerElement) {
-                playerElement.querySelector('.text-xs').textContent = name.substring(0, 4);
-                playerElement.querySelector('.font-semibold').textContent = position;
-                playerElement.dataset.position = position;
+                const player = players[playerId];
+                playerElement.querySelector('.text-xs').textContent = player.name.substring(0, 4);
+                playerElement.querySelector('.font-semibold').textContent = player.position;
+                playerElement.dataset.position = player.position;
             }
         }
         
@@ -860,7 +857,7 @@
             document.getElementById('messageModal').classList.remove('show');
         }
 
-        // ★追加: コントロールパネルの開閉機能
+        // --- Collapsible Panel ---
         function toggleControlPanel() {
             const panel = document.getElementById('collapsible-panel');
             const chevron = document.getElementById('panel-chevron');
