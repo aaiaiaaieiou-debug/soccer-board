@@ -112,12 +112,22 @@
                 </div>
             </div>
             <!-- Formation Controls -->
-            <div class="mt-4 pt-4 border-t border-gray-700">
-                <h3 class="text-white font-semibold mb-2 text-center">フォーメーション選択</h3>
-                <div id="formation-controls" class="flex gap-2 justify-center flex-wrap">
-                    <button onclick="setFormation('1-3-3-1')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-3-3-1</button>
-                    <button onclick="setFormation('1-2-3-2')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-3-2</button>
-                    <button onclick="setFormation('1-2-4-1')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-4-1</button>
+            <div class="mt-4 pt-4 border-t border-gray-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-white font-semibold mb-2 text-center">自チームフォーメーション</h3>
+                    <div id="home-formation-controls" class="flex gap-2 justify-center flex-wrap">
+                        <button onclick="setFormation('1-3-3-1')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-3-3-1</button>
+                        <button onclick="setFormation('1-2-3-2')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-3-2</button>
+                        <button onclick="setFormation('1-2-4-1')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-4-1</button>
+                    </div>
+                </div>
+                 <div>
+                    <h3 class="text-white font-semibold mb-2 text-center">相手チームフォーメーション</h3>
+                    <div id="away-formation-controls" class="flex gap-2 justify-center flex-wrap">
+                        <button onclick="setOpponentFormation('1-3-3-1')" class="formation-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">1-3-3-1</button>
+                        <button onclick="setOpponentFormation('1-2-3-2')" class="formation-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-3-2</button>
+                        <button onclick="setOpponentFormation('1-2-4-1')" class="formation-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-4-1</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -126,18 +136,7 @@
         <div id="field-container" class="relative soccer-field rounded-lg shadow-2xl aspect-[3/4] w-full max-w-lg mx-auto">
             <!-- Center Circle -->
             <div class="center-circle"></div>
-            
-            <!-- Home players will be dynamically created by JavaScript -->
-
-            <!-- Away Team Players (Red) - 8-a-side -->
-            <div class="player-icon absolute" data-team="away" data-player="GK_A" data-position="GK" style="top: 5%; left: 45%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">GK</div><div class="text-xs">相手</div></div></div></div>
-            <div class="player-icon absolute" data-team="away" data-player="DF1_A" data-position="DF" style="top: 15%; left: 20%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">DF</div><div class="text-xs">相手</div></div></div></div>
-            <div class="player-icon absolute" data-team="away" data-player="DF2_A" data-position="DF" style="top: 15%; left: 45%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">DF</div><div class="text-xs">相手</div></div></div></div>
-            <div class="player-icon absolute" data-team="away" data-player="DF3_A" data-position="DF" style="top: 15%; left: 70%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">DF</div><div class="text-xs">相手</div></div></div></div>
-            <div class="player-icon absolute" data-team="away" data-player="MF1_A" data-position="MF" style="top: 30%; left: 20%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">MF</div><div class="text-xs">相手</div></div></div></div>
-            <div class="player-icon absolute" data-team="away" data-player="MF2_A" data-position="MF" style="top: 30%; left: 45%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">MF</div><div class="text-xs">相手</div></div></div></div>
-            <div class="player-icon absolute" data-team="away" data-player="MF3_A" data-position="MF" style="top: 30%; left: 70%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">MF</div><div class="text-xs">相手</div></div></div></div>
-            <div class="player-icon absolute" data-team="away" data-player="FW1_A" data-position="FW" style="top: 45%; left: 45%;"><div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">FW</div><div class="text-xs">相手</div></div></div></div>
+            <!-- Players will be dynamically created by JavaScript -->
         </div>
 
         <!-- Substitutes Area -->
@@ -189,34 +188,26 @@
         let offset = { x: 0, y: 0 };
         let editingPlayer = null;
         let currentFormation = '1-3-3-1';
+        let currentOpponentFormation = '1-3-3-1';
         let players = {};
         let isOpponentVisible = true;
 
         const formations = {
-            '1-3-3-1': {
-                slots: [
-                    { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '18%' } },
-                    { role: 'DF', pos: { top: '78%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '72%' } },
-                    { role: 'MF', pos: { top: '63%', left: '18%' } }, { role: 'MF', pos: { top: '63%', left: '45%' } },
-                    { role: 'MF', pos: { top: '63%', left: '72%' } }, { role: 'FW', pos: { top: '50%', left: '45%' } }
-                ]
-            },
-            '1-2-3-2': {
-                slots: [
-                    { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '25%' } },
-                    { role: 'DF', pos: { top: '78%', left: '65%' } }, { role: 'MF', pos: { top: '63%', left: '18%' } },
-                    { role: 'MF', pos: { top: '63%', left: '45%' } }, { role: 'MF', pos: { top: '63%', left: '72%' } },
-                    { role: 'FW', pos: { top: '50%', left: '25%' } }, { role: 'FW', pos: { top: '50%', left: '65%' } }
-                ]
-            },
-            '1-2-4-1': {
-                slots: [
-                    { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '25%' } },
-                    { role: 'DF', pos: { top: '78%', left: '65%' } }, { role: 'MF', pos: { top: '65%', left: '15%' } },
-                    { role: 'MF', pos: { top: '60%', left: '45%' } }, { role: 'MF', pos: { top: '65%', left: '75%' } },
-                    { role: 'MF', pos: { top: '70%', left: '45%' } }, { role: 'FW', pos: { top: '50%', left: '45%' } }
-                ]
-            }
+            '1-3-3-1': { slots: [ { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '18%' } }, { role: 'DF', pos: { top: '78%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '72%' } }, { role: 'MF', pos: { top: '63%', left: '18%' } }, { role: 'MF', pos: { top: '63%', left: '45%' } }, { role: 'MF', pos: { top: '63%', left: '72%' } }, { role: 'FW', pos: { top: '50%', left: '45%' } } ] },
+            '1-2-3-2': { slots: [ { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '25%' } }, { role: 'DF', pos: { top: '78%', left: '65%' } }, { role: 'MF', pos: { top: '63%', left: '18%' } }, { role: 'MF', pos: { top: '63%', left: '45%' } }, { role: 'MF', pos: { top: '63%', left: '72%' } }, { role: 'FW', pos: { top: '50%', left: '25%' } }, { role: 'FW', pos: { top: '50%', left: '65%' } } ] },
+            '1-2-4-1': { slots: [ { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '25%' } }, { role: 'DF', pos: { top: '78%', left: '65%' } }, { role: 'MF', pos: { top: '65%', left: '15%' } }, { role: 'MF', pos: { top: '60%', left: '45%' } }, { role: 'MF', pos: { top: '65%', left: '75%' } }, { role: 'MF', pos: { top: '70%', left: '45%' } }, { role: 'FW', pos: { top: '50%', left: '45%' } } ] }
+        };
+
+        const opponentFormations = {
+            '1-3-3-1': { slots: [ { role: 'GK', pos: { top: '5%', left: '45%' } }, { role: 'DF', pos: { top: '18%', left: '18%' } }, { role: 'DF', pos: { top: '18%', left: '45%' } }, { role: 'DF', pos: { top: '18%', left: '72%' } }, { role: 'MF', pos: { top: '33%', left: '18%' } }, { role: 'MF', pos: { top: '33%', left: '45%' } }, { role: 'MF', pos: { top: '33%', left: '72%' } }, { role: 'FW', pos: { top: '45%', left: '45%' } } ] },
+            '1-2-3-2': { slots: [ { role: 'GK', pos: { top: '5%', left: '45%' } }, { role: 'DF', pos: { top: '18%', left: '25%' } }, { role: 'DF', pos: { top: '18%', left: '65%' } }, { role: 'MF', pos: { top: '33%', left: '18%' } }, { role: 'MF', pos: { top: '33%', left: '45%' } }, { role: 'MF', pos: { top: '33%', left: '72%' } }, { role: 'FW', pos: { top: '45%', left: '25%' } }, { role: 'FW', pos: { top: '45%', left: '65%' } } ] },
+            '1-2-4-1': { slots: [ { role: 'GK', pos: { top: '5%', left: '45%' } }, { role: 'DF', pos: { top: '18%', left: '25%' } }, { role: 'DF', pos: { top: '18%', left: '65%' } }, { role: 'MF', pos: { top: '30%', left: '15%' } }, { role: 'MF', pos: { top: '35%', left: '45%' } }, { role: 'MF', pos: { top: '30%', left: '75%' } }, { role: 'MF', pos: { top: '25%', left: '45%' } }, { role: 'FW', pos: { top: '45%', left: '45%' } } ] }
+        };
+
+        const opponentPlayers = {
+            'GK_A': { position: 'GK' }, 'DF1_A': { position: 'DF' }, 'DF2_A': { position: 'DF' }, 'DF3_A': { position: 'DF' },
+            'MF1_A': { position: 'MF' }, 'MF2_A': { position: 'MF' }, 'MF3_A': { position: 'MF' }, 'MF4_A': { position: 'MF' },
+            'FW1_A': { position: 'FW' }, 'FW2_A': { position: 'FW' }
         };
 
         // --- Data Persistence ---
@@ -229,13 +220,7 @@
             if (storedPlayers && Object.keys(JSON.parse(storedPlayers)).length > 0) {
                 players = JSON.parse(storedPlayers);
             } else {
-                players = {
-                    'player_1': { name: '田中', position: 'GK' }, 'player_2': { name: '佐藤', position: 'DF' },
-                    'player_3': { name: '鈴木', position: 'DF' }, 'player_4': { name: '高橋', position: 'DF' },
-                    'player_5': { name: '渡辺', position: 'MF' }, 'player_6': { name: '山田', position: 'MF' },
-                    'player_7': { name: '中村', position: 'MF' }, 'player_8': { name: '伊藤', position: 'MF' },
-                    'player_9': { name: '小林', position: 'FW' }, 'player_10': { name: '加藤', position: 'FW' }
-                };
+                players = { 'player_1': { name: '田中', position: 'GK' }, 'player_2': { name: '佐藤', position: 'DF' }, 'player_3': { name: '鈴木', position: 'DF' }, 'player_4': { name: '高橋', position: 'DF' }, 'player_5': { name: '渡辺', position: 'MF' }, 'player_6': { name: '山田', position: 'MF' }, 'player_7': { name: '中村', position: 'MF' }, 'player_8': { name: '伊藤', position: 'MF' }, 'player_9': { name: '小林', position: 'FW' }, 'player_10': { name: '加藤', position: 'FW' } };
                 savePlayersToStorage();
             }
         }
@@ -244,7 +229,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadPlayersFromStorage();
             createPlayerElements();
+            createOpponentElements();
             setFormation('1-3-3-1');
+            setOpponentFormation('1-3-3-1');
         });
 
         function createPlayerElements() {
@@ -257,6 +244,21 @@
                 playerDiv.dataset.player = playerId;
                 playerDiv.dataset.position = player.position;
                 playerDiv.innerHTML = `<div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">${player.position}</div><div class="text-xs">${player.name.substring(0, 4)}</div></div></div>`;
+                fieldContainer.appendChild(playerDiv);
+            });
+        }
+        
+        function createOpponentElements() {
+            const fieldContainer = document.getElementById('field-container');
+            Object.keys(opponentPlayers).forEach(playerId => {
+                const player = opponentPlayers[playerId];
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player-icon';
+                playerDiv.dataset.team = 'away';
+                playerDiv.dataset.player = playerId;
+                playerDiv.dataset.position = player.position;
+                playerDiv.style.display = 'none'; // Initially hidden
+                playerDiv.innerHTML = `<div class="bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">${player.position}</div><div class="text-xs">相手</div></div></div>`;
                 fieldContainer.appendChild(playerDiv);
             });
         }
@@ -273,19 +275,15 @@
                 const playerElement = document.querySelector(`.player-icon[data-player="${playerId}"]`);
                 if (playerElement) {
                     substitutesContainer.appendChild(playerElement);
-                    playerElement.style.display = '';
                     playerElement.classList.remove('absolute');
-                    playerElement.style.top = '';
-                    playerElement.style.left = '';
                     playerElement.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
                 }
             });
 
-            const availablePlayerIds = Object.keys(players);
+            const availablePlayerIds = [...Object.keys(players)];
             
             formation.slots.forEach(slot => {
                 const starterId = availablePlayerIds.find(id => players[id].position === slot.role);
-
                 if (starterId) {
                     const starterElement = document.querySelector(`.player-icon[data-player="${starterId}"]`);
                     field.appendChild(starterElement);
@@ -293,21 +291,49 @@
                     starterElement.style.top = slot.pos.top;
                     starterElement.style.left = slot.pos.left;
                     starterElement.firstElementChild.className = 'bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg';
-                    
                     availablePlayerIds.splice(availablePlayerIds.indexOf(starterId), 1);
                 }
             });
 
-            document.querySelectorAll('.formation-btn').forEach(btn => {
+            document.querySelectorAll('#home-formation-controls .formation-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.textContent === formationName) btn.classList.add('active');
             });
             
             initializeAllDragEvents();
         }
+
+        function setOpponentFormation(formationName) {
+            currentOpponentFormation = formationName;
+            const formation = opponentFormations[formationName];
+            const field = document.getElementById('field-container');
+
+            // Hide all opponent players first
+            document.querySelectorAll('.player-icon[data-team="away"]').forEach(p => p.style.display = 'none');
+
+            const availablePlayerIds = [...Object.keys(opponentPlayers)];
+            
+            formation.slots.forEach(slot => {
+                const starterId = availablePlayerIds.find(id => opponentPlayers[id].position === slot.role);
+                if (starterId) {
+                    const starterElement = document.querySelector(`.player-icon[data-player="${starterId}"]`);
+                    starterElement.style.display = isOpponentVisible ? '' : 'none';
+                    starterElement.classList.add('absolute');
+                    starterElement.style.top = slot.pos.top;
+                    starterElement.style.left = slot.pos.left;
+                    availablePlayerIds.splice(availablePlayerIds.indexOf(starterId), 1);
+                }
+            });
+
+            document.querySelectorAll('#away-formation-controls .formation-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === formationName) btn.classList.add('active');
+            });
+        }
         
         function resetCurrentFormation() {
             setFormation(currentFormation);
+            setOpponentFormation(currentOpponentFormation);
         }
 
         // --- Drag and Drop Functions ---
@@ -420,7 +446,10 @@
             const btn = document.getElementById('toggleOpponentBtn');
 
             opponentPlayers.forEach(player => {
-                player.style.display = isOpponentVisible ? '' : 'none';
+                // Only toggle visibility if it's supposed to be on the field
+                if (player.closest('#field-container')) {
+                     player.style.display = isOpponentVisible ? '' : 'none';
+                }
             });
 
             if (isOpponentVisible) {
