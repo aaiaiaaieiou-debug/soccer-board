@@ -14,27 +14,15 @@
         /* Styling for the soccer field background and lines */
         .soccer-field {
             background-color: #3A6B35; /* Base green color */
+            position: relative;
+            overflow: hidden;
             background-image:
-                /* Center line */
-                linear-gradient(to right, transparent 50%, white 50%, white 50.5%, transparent 50.5%),
-                /* Top penalty area */
-                linear-gradient(to bottom, transparent 18%, white 18%, white 18.5%, transparent 18.5%),
-                linear-gradient(to right, transparent 25%, white 25%, white 25.5%, transparent 25.5%),
-                linear-gradient(to right, transparent 74.5%, white 74.5%, white 75%, transparent 75%),
-                /* Bottom penalty area */
-                linear-gradient(to bottom, transparent 81.5%, white 81.5%, white 82%, transparent 82%),
-                /* Top goal area */
-                linear-gradient(to bottom, transparent 10%, white 10%, white 10.5%, transparent 10.5%),
-                 linear-gradient(to right, transparent 35%, white 35%, white 35.5%, transparent 35.5%),
-                linear-gradient(to right, transparent 64.5%, white 64.5%, white 65%, transparent 65%),
-                /* Bottom goal area */
-                linear-gradient(to bottom, transparent 89.5%, white 89.5%, white 90%, transparent 90%),
-                /* Field borders */
-                linear-gradient(to bottom, white 1%, transparent 1%, transparent 99%, white 99%),
-                linear-gradient(to right, white 1%, transparent 1%, transparent 99%, white 99%);
-            background-size: 100% 100%, 100% 100%, 100% 18.5%, 100% 18.5%, 100% 100%, 100% 10.5%, 100% 10.5%, 100% 10.5%, 100% 100%, 100% 100%, 100% 100%;
-            background-repeat: no-repeat;
-            background-position: center, center, 0 0, 0 0, center, 0 0, 0 0, 0 0, center, center, center;
+                /* Outer Borders (Vertical) */
+                linear-gradient(to right, white 0%, white 1%, transparent 1%, transparent 99%, white 99%),
+                /* Outer Borders (Horizontal) */
+                linear-gradient(to bottom, white 0%, white 1%, transparent 1%, transparent 99%, white 99%),
+                /* Center Line */
+                linear-gradient(to top, transparent 49.8%, white 49.8%, white 50.2%, transparent 50.2%);
         }
         
         /* Styling for the draggable player icons */
@@ -113,6 +101,9 @@
                     </button>
                     <button onclick="showPlayerManager()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium">
                         選手管理
+                    </button>
+                    <button onclick="toggleOpponent()" id="toggleOpponentBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium">
+                        相手を非表示
                     </button>
                 </div>
                 <div class="text-white text-sm">
@@ -198,6 +189,7 @@
         let editingPlayer = null;
         let currentFormation = '1-3-3-1';
         let players = {};
+        let isOpponentVisible = true;
 
         const formations = {
             '1-3-3-1': {
@@ -252,7 +244,6 @@
                 playerDiv.dataset.team = 'home';
                 playerDiv.dataset.player = playerId;
                 playerDiv.dataset.position = player.position;
-                // ★修正点: 選手名を3文字にトリミング
                 playerDiv.innerHTML = `<div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">${player.position}</div><div class="text-xs">${player.name.substring(0, 3)}</div></div></div>`;
                 fieldContainer.appendChild(playerDiv);
             });
@@ -402,6 +393,25 @@
             draggedSubstitute = null;
         }
 
+        // --- Opponent Toggle ---
+        function toggleOpponent() {
+            isOpponentVisible = !isOpponentVisible;
+            const opponentPlayers = document.querySelectorAll('.player-icon[data-team="away"]');
+            const btn = document.getElementById('toggleOpponentBtn');
+
+            opponentPlayers.forEach(player => {
+                player.style.display = isOpponentVisible ? '' : 'none';
+            });
+
+            if (isOpponentVisible) {
+                btn.textContent = '相手を非表示';
+                btn.className = 'bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium';
+            } else {
+                btn.textContent = '相手を表示';
+                btn.className = 'bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium';
+            }
+        }
+
         // --- Substitution Logic ---
         function toggleSubstitution() {
             substitutionMode = !substitutionMode;
@@ -537,7 +547,6 @@
                 playerDiv.dataset.team = 'home';
                 playerDiv.dataset.player = newPlayerId;
                 playerDiv.dataset.position = position;
-                // ★修正点: 新規選手も3文字にトリミング
                 playerDiv.innerHTML = `<div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">${position}</div><div class="text-xs">${name.substring(0, 3)}</div></div></div>`;
                 document.getElementById('field-container').appendChild(playerDiv);
             }
@@ -562,7 +571,6 @@
         function updatePlayerOnBoard(playerId, name, position) {
             const playerElement = document.querySelector(`[data-player="${playerId}"]`);
             if (playerElement) {
-                // ★修正点: 編集した選手名も3文字にトリミング
                 playerElement.querySelector('.text-xs').textContent = name.substring(0, 3);
                 playerElement.querySelector('.font-semibold').textContent = position;
                 playerElement.dataset.position = position;
