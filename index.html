@@ -320,10 +320,6 @@
             Object.keys(players).forEach(playerId => {
                 const playerElement = document.querySelector(`.player-icon[data-player="${playerId}"]`);
                 if (playerElement) {
-                    const player = players[playerId];
-                    playerElement.querySelector('.font-semibold').textContent = player.position;
-                    playerElement.querySelector('.text-xs').textContent = player.name.substring(0, 4);
-                    playerElement.dataset.position = player.position;
                     substitutesContainer.appendChild(playerElement);
                     playerElement.classList.remove('absolute');
                     playerElement.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
