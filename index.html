@@ -42,6 +42,12 @@
             transform: scale(1.2);
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
+
+        /* [追加] 交代モードで選択された選手をハイライトするスタイル */
+        .player-icon.player-selected > div {
+            box-shadow: 0 0 15px 5px #facc15; /* yellow glow */
+            transform: scale(1.15);
+        }
         
         /* Styling for the center circle on the field */
         .center-circle {
@@ -191,6 +197,7 @@
         let currentOpponentFormation = '1-3-3-1';
         let players = {};
         let isOpponentVisible = true;
+        let playerToSwapOut = null; // ★追加: 交代対象の選手を保持する変数
 
         const formations = {
             '1-3-3-1': { slots: [ { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '18%' } }, { role: 'DF', pos: { top: '78%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '72%' } }, { role: 'MF', pos: { top: '63%', left: '18%' } }, { role: 'MF', pos: { top: '63%', left: '45%' } }, { role: 'MF', pos: { top: '63%', left: '72%' } }, { role: 'FW', pos: { top: '50%', left: '45%' } } ] },
@@ -308,7 +315,6 @@
             const formation = opponentFormations[formationName];
             const field = document.getElementById('field-container');
 
-            // Hide all opponent players first
             document.querySelectorAll('.player-icon[data-team="away"]').forEach(p => p.style.display = 'none');
 
             const availablePlayerIds = [...Object.keys(opponentPlayers)];
@@ -446,7 +452,6 @@
             const btn = document.getElementById('toggleOpponentBtn');
 
             opponentPlayers.forEach(player => {
-                // Only toggle visibility if it's supposed to be on the field
                 if (player.closest('#field-container')) {
                      player.style.display = isOpponentVisible ? '' : 'none';
                 }
@@ -462,9 +467,15 @@
         }
 
         // --- Substitution Logic ---
+        // ★修正点: 交代ロジックを全面的に書き換え
         function toggleSubstitution() {
             substitutionMode = !substitutionMode;
             const btn = document.getElementById('subBtn');
+            if (playerToSwapOut) {
+                playerToSwapOut.classList.remove('player-selected');
+                playerToSwapOut = null;
+            }
+            
             if (substitutionMode) {
                 btn.textContent = '交代モード終了';
                 btn.className = 'bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium';
@@ -480,7 +491,7 @@
             const instructionsDiv = document.createElement('div');
             instructionsDiv.id = 'substitutionInstructions';
             instructionsDiv.className = 'fixed top-4 right-4 bg-orange-600 text-white p-4 rounded-lg shadow-lg z-50 max-w-sm animate-pulse';
-            instructionsDiv.innerHTML = `<h4 class="font-bold mb-2">🔄 交代モード</h4><p class="text-sm">フィールドの選手をクリックして、控え選手と交代します。</p>`;
+            instructionsDiv.innerHTML = `<h4 class="font-bold mb-2">🔄 交代モード</h4><p class="text-sm">1. フィールドの選手を選択</p><p class="text-sm">2. 控えの選手を選択して交代</p>`;
             document.body.appendChild(instructionsDiv);
         }
 
@@ -494,20 +505,37 @@
             const clickedPlayer = e.target.closest('.player-icon[data-team="home"]');
             if (!clickedPlayer) return;
             e.stopPropagation();
-            const isOnField = clickedPlayer.closest('.soccer-field');
-            if (isOnField) {
-                const substitutes = document.querySelectorAll('#substitutes .player-icon');
-                if (substitutes.length > 0) {
-                    performSwap(clickedPlayer, substitutes[0]);
+
+            const isOnField = clickedPlayer.closest('#field-container');
+            const isSubstitute = clickedPlayer.closest('#substitutes');
+
+            if (!playerToSwapOut) { // 1人目（フィールドの選手）を選択
+                if (isOnField) {
+                    playerToSwapOut = clickedPlayer;
+                    playerToSwapOut.classList.add('player-selected');
                 } else {
-                    showModalMessage('控え選手がいません。');
+                    showModalMessage('フィールドの選手を先に選択してください。');
                 }
-            } else {
-                showModalMessage('控え選手は直接フィールドに配置できません。フィールドの選手をクリックしてください。');
+            } else { // 2人目（控え選手）を選択
+                if (playerToSwapOut === clickedPlayer) { // 同じ選手をクリックしたら選択解除
+                    playerToSwapOut.classList.remove('player-selected');
+                    playerToSwapOut = null;
+                    return;
+                }
+
+                if (isSubstitute) {
+                    performSwap(playerToSwapOut, clickedPlayer);
+                } else { // 別のフィールド選手をクリックした場合、選択対象を切り替え
+                    playerToSwapOut.classList.remove('player-selected');
+                    playerToSwapOut = clickedPlayer;
+                    playerToSwapOut.classList.add('player-selected');
+                }
             }
         });
 
         function performSwap(playerOut, substituteIn) {
+            playerOut.classList.remove('player-selected');
+
             const field = document.querySelector('.soccer-field');
             const substitutesContainer = document.getElementById('substitutes');
             const playerOutTop = playerOut.style.top;
@@ -528,6 +556,7 @@
             playerOut.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
             
             showSubstitutionMessage(`${substituteInName.substring(0,4)} ⇄ ${playerOutName.substring(0,4)}`);
+            playerToSwapOut = null; // リセット
             initializeAllDragEvents();
         }
 
