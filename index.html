@@ -197,7 +197,7 @@
         let currentOpponentFormation = '1-3-3-1';
         let players = {};
         let isOpponentVisible = true;
-        let playerToSwapOut = null; // ★追加: 交代対象の選手を保持する変数
+        let playerToSwapOut = null;
 
         const formations = {
             '1-3-3-1': { slots: [ { role: 'GK', pos: { top: '90%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '18%' } }, { role: 'DF', pos: { top: '78%', left: '45%' } }, { role: 'DF', pos: { top: '78%', left: '72%' } }, { role: 'MF', pos: { top: '63%', left: '18%' } }, { role: 'MF', pos: { top: '63%', left: '45%' } }, { role: 'MF', pos: { top: '63%', left: '72%' } }, { role: 'FW', pos: { top: '50%', left: '45%' } } ] },
@@ -281,6 +281,12 @@
             Object.keys(players).forEach(playerId => {
                 const playerElement = document.querySelector(`.player-icon[data-player="${playerId}"]`);
                 if (playerElement) {
+                    // ★修正点: 選手情報を毎回更新する
+                    const player = players[playerId];
+                    playerElement.querySelector('.font-semibold').textContent = player.position;
+                    playerElement.querySelector('.text-xs').textContent = player.name.substring(0, 4);
+                    playerElement.dataset.position = player.position;
+
                     substitutesContainer.appendChild(playerElement);
                     playerElement.classList.remove('absolute');
                     playerElement.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
@@ -467,7 +473,6 @@
         }
 
         // --- Substitution Logic ---
-        // ★修正点: 交代ロジックを全面的に書き換え
         function toggleSubstitution() {
             substitutionMode = !substitutionMode;
             const btn = document.getElementById('subBtn');
@@ -616,7 +621,6 @@
             if (editingPlayer) {
                 players[editingPlayer].name = name;
                 players[editingPlayer].position = position;
-                updatePlayerOnBoard(editingPlayer, name, position);
             } else {
                 const newPlayerId = 'player_' + Date.now();
                 players[newPlayerId] = { name: name, position: position };
@@ -645,16 +649,7 @@
                 resetCurrentFormation();
             });
         }
-
-        function updatePlayerOnBoard(playerId, name, position) {
-            const playerElement = document.querySelector(`[data-player="${playerId}"]`);
-            if (playerElement) {
-                playerElement.querySelector('.text-xs').textContent = name.substring(0, 4);
-                playerElement.querySelector('.font-semibold').textContent = position;
-                playerElement.dataset.position = position;
-            }
-        }
-
+        
         function cancelPlayerForm() {
             document.getElementById('playerForm').classList.add('hidden');
             editingPlayer = null;
