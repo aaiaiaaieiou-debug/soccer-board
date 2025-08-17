@@ -320,7 +320,7 @@
                 <div class="penalty-arc bottom"></div>
                 <div class="goal top"></div>
                 <div class="goal bottom"></div>
-                <!-- Players and Slots will be dynamically created by JavaScript -->
+                <!-- Players will be dynamically created by JavaScript -->
             </div>
 
             <!-- Drawing Controls -->
@@ -743,7 +743,7 @@
 
             substitutesContainer.appendChild(playerOut);
             playerOut.classList.remove('absolute');
-            playerOut.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
+            playerOut.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg';
             
             showSubstitutionMessage(`${substituteInName.substring(0,4)} ⇄ ${playerOutName.substring(0,4)}`);
             playerToSwapOut = null;
