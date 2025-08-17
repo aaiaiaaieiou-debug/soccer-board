@@ -64,6 +64,25 @@
             pointer-events: none;
         }
 
+        /* ★追加: ペナルティエリアのスタイル */
+        .penalty-area {
+            position: absolute;
+            width: 60%; /* 横幅 */
+            height: 25%; /* 縦幅 */
+            left: 20%; /* 中央配置 */
+            border: 2px solid white;
+            pointer-events: none;
+        }
+        .penalty-area.top {
+            top: 1%;
+            border-top: none;
+        }
+        .penalty-area.bottom {
+            bottom: 1%;
+            border-bottom: none;
+        }
+
+
         /* Base styles for modals */
         .modal {
             display: none;
@@ -136,6 +155,23 @@
         .collapsible-content.expanded {
             max-height: 500px; /* Adjust as needed */
         }
+
+        /* スマートフォン縦向き用のスタイル */
+        @media (max-width: 640px) {
+            .player-icon > div {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 0.6rem !important;
+            }
+            .drawing-tools button {
+                width: 40px !important;
+                height: 40px !important;
+            }
+            .drawing-tools .color-box {
+                width: 28px !important;
+                height: 28px !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-900 min-h-screen p-4 flex flex-col items-center">
@@ -192,11 +228,14 @@
             <div id="field-container" class="relative soccer-field rounded-lg shadow-2xl aspect-[3/4] w-full max-w-lg mx-auto">
                 <canvas id="drawing-canvas"></canvas>
                 <div class="center-circle"></div>
+                <!-- ★追加: ペナルティエリア用の要素 -->
+                <div class="penalty-area top"></div>
+                <div class="penalty-area bottom"></div>
                 <!-- Players will be dynamically created by JavaScript -->
             </div>
 
             <!-- Drawing Controls -->
-            <div class="bg-gray-800 rounded-lg p-4 flex flex-row md:flex-col flex-wrap gap-4 items-center justify-center w-full md:w-auto">
+            <div class="drawing-tools bg-gray-800 rounded-lg p-4 flex flex-row md:flex-col flex-wrap gap-4 items-center justify-center w-full md:w-auto">
                 <button id="draw-mode-btn" onclick="toggleDrawingMode()" class="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-lg font-medium flex items-center justify-center w-12 h-12">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                 </button>
