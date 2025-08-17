@@ -121,20 +121,20 @@
         /* Penalty Arc Style */
         .penalty-arc {
             position: absolute;
-            width: 20%; /* ★修正点: 半径をセンターサークルと合わせる */
+            width: 20%;
             height: 10%;
-            left: 40%; /* ★修正点: 中央寄せ */
+            left: 40%;
             border: 2px solid transparent;
             border-radius: 50%;
             box-sizing: border-box;
         }
         .penalty-arc.top {
-            top: 17%; /* ★修正点: 位置を調整 */
+            top: 17%;
             border-bottom-color: white; 
             transform: translateY(-50%);
         }
         .penalty-arc.bottom {
-            bottom: 17%; /* ★修正点: 位置を調整 */
+            bottom: 17%;
             border-top-color: white; 
             transform: translateY(50%);
         }
@@ -159,14 +159,19 @@
             justify-content: center;
         }
 
+        .formation-btn {
+            background-color: #4B5563; /* gray-600 */
+        }
+        .formation-btn:hover {
+            background-color: #374151; /* gray-700 */
+        }
         .formation-btn.active {
-            background-color: #1D4ED8;
+            background-color: #2563EB; /* blue-600 */
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
             transform: translateY(1px);
         }
-        
         .formation-btn.away-active {
-            background-color: #b91c1c; /* Darker red */
+            background-color: #DC2626; /* red-600 */
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
             transform: translateY(1px);
         }
@@ -238,12 +243,12 @@
     <div class="w-full max-w-6xl mx-auto">
         <!-- Control Panel -->
         <div class="bg-gray-800 rounded-lg p-4 mb-6">
-            <div class="flex flex-wrap gap-4 items-center justify-between mb-4">
+            <div class="flex flex-wrap gap-2 items-center justify-between mb-4">
                 <div class="flex gap-2 flex-wrap">
-                    <button onclick="resetCurrentFormation()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium">配置リセット</button>
-                    <button onclick="toggleSubstitution()" id="subBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">選手交代モード</button>
-                    <button onclick="showPlayerManager()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium">選手管理</button>
-                    <button onclick="toggleOpponent()" id="toggleOpponentBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium">相手を非表示</button>
+                    <button onclick="resetCurrentFormation()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-sm rounded-lg font-medium">配置リセット</button>
+                    <button onclick="toggleSubstitution()" id="subBtn" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 text-sm rounded-lg font-medium">選手交代モード</button>
+                    <button onclick="showPlayerManager()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 text-sm rounded-lg font-medium">選手管理</button>
+                    <button onclick="toggleOpponent()" id="toggleOpponentBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 text-sm rounded-lg font-medium">相手を非表示</button>
                 </div>
                 <div class="text-white text-sm">
                     <span class="bg-blue-600 px-2 py-1 rounded mr-2">青: 自チーム</span>
@@ -261,17 +266,17 @@
                         <div>
                             <h3 class="text-white font-semibold mb-2 text-center">自チームフォーメーション</h3>
                             <div id="home-formation-controls" class="flex gap-2 justify-center flex-wrap">
-                                <button onclick="setFormation('1-3-3-1')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-3-3-1</button>
-                                <button onclick="setFormation('1-2-3-2')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-3-2</button>
-                                <button onclick="setFormation('1-2-4-1')" class="formation-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-4-1</button>
+                                <button onclick="setFormation('1-3-3-1')" class="formation-btn text-white px-3 py-1.5 text-sm rounded-lg font-medium transition">1-3-3-1</button>
+                                <button onclick="setFormation('1-2-3-2')" class="formation-btn text-white px-3 py-1.5 text-sm rounded-lg font-medium transition">1-2-3-2</button>
+                                <button onclick="setFormation('1-2-4-1')" class="formation-btn text-white px-3 py-1.5 text-sm rounded-lg font-medium transition">1-2-4-1</button>
                             </div>
                         </div>
                          <div>
                             <h3 class="text-white font-semibold mb-2 text-center">相手チームフォーメーション</h3>
                             <div id="away-formation-controls" class="flex gap-2 justify-center flex-wrap">
-                                <button onclick="setOpponentFormation('1-3-3-1')" class="formation-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">1-3-3-1</button>
-                                <button onclick="setOpponentFormation('1-2-3-2')" class="formation-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-3-2</button>
-                                <button onclick="setOpponentFormation('1-2-4-1')" class="formation-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">1-2-4-1</button>
+                                <button onclick="setOpponentFormation('1-3-3-1')" class="formation-btn text-white px-3 py-1.5 text-sm rounded-lg font-medium transition">1-3-3-1</button>
+                                <button onclick="setOpponentFormation('1-2-3-2')" class="formation-btn text-white px-3 py-1.5 text-sm rounded-lg font-medium transition">1-2-3-2</button>
+                                <button onclick="setOpponentFormation('1-2-4-1')" class="formation-btn text-white px-3 py-1.5 text-sm rounded-lg font-medium transition">1-2-4-1</button>
                             </div>
                         </div>
                     </div>
@@ -281,6 +286,14 @@
 
         <!-- Field and Tools Container -->
         <div class="flex flex-col md:flex-row gap-4 items-start justify-center">
+            <!-- Substitutes Area -->
+            <div class="bg-gray-800 rounded-lg p-4 w-full md:w-48">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-white text-lg font-bold">控え選手</h3>
+                </div>
+                <div id="substitutes" class="flex flex-row md:flex-col flex-wrap gap-3"></div>
+            </div>
+
             <!-- Soccer Field Container -->
             <div id="field-container" class="relative soccer-field rounded-lg shadow-2xl aspect-[3/4] w-full max-w-lg mx-auto">
                 <canvas id="drawing-canvas"></canvas>
@@ -298,7 +311,7 @@
 
             <!-- Drawing Controls -->
             <div class="drawing-tools bg-gray-800 rounded-lg p-4 flex flex-row md:flex-col flex-wrap gap-4 items-center justify-center w-full md:w-auto">
-                <button id="draw-mode-btn" onclick="toggleDrawingMode()" class="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-lg font-medium flex items-center justify-center w-12 h-12">
+                <button id="draw-mode-btn" onclick="toggleDrawingMode()" class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-lg font-medium flex items-center justify-center w-12 h-12" title="手書きモード">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                 </button>
                 <div id="color-palette" class="flex md:flex-col gap-2 items-center">
@@ -307,25 +320,16 @@
                     <div class="color-box bg-red-500" onclick="changeColor('#ef4444')"></div>
                     <div class="color-box bg-blue-500" onclick="changeColor('#3b82f6')"></div>
                 </div>
-                <button onclick="undo()" class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-lg font-medium w-12 h-12 flex items-center justify-center">
+                <button onclick="undo()" class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-lg font-medium w-12 h-12 flex items-center justify-center" title="戻る">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                 </button>
-                <button onclick="redo()" class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-lg font-medium w-12 h-12 flex items-center justify-center">
+                <button onclick="redo()" class="bg-gray-600 hover:bg-gray-700 text-white p-2 rounded-lg font-medium w-12 h-12 flex items-center justify-center" title="進む">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" /></svg>
                 </button>
-                <button onclick="clearCanvas()" class="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg font-medium w-12 h-12 flex items-center justify-center">
+                <button onclick="clearCanvas()" class="bg-red-700 hover:bg-red-800 text-white p-2 rounded-lg font-medium w-12 h-12 flex items-center justify-center" title="全削除">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
             </div>
-        </div>
-
-        <!-- Substitutes Area -->
-        <div class="mt-6 bg-gray-800 rounded-lg p-4">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-white text-lg font-bold">控え選手</h3>
-                <p class="text-gray-400 text-sm">ドラッグで順序変更可能（左が優先）</p>
-            </div>
-            <div id="substitutes" class="flex flex-wrap gap-3"></div>
         </div>
     </div>
 
@@ -506,8 +510,8 @@
             });
 
             document.querySelectorAll('#away-formation-controls .formation-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent === formationName) btn.classList.add('active');
+                btn.classList.remove('away-active');
+                if (btn.textContent === formationName) btn.classList.add('away-active');
             });
         }
         
@@ -625,7 +629,7 @@
             const btn = document.getElementById('toggleOpponentBtn');
             setOpponentFormation(currentOpponentFormation); // Re-apply formation to respect visibility
             btn.textContent = isOpponentVisible ? '相手を非表示' : '相手を表示';
-            btn.className = `bg-yellow-${isOpponentVisible ? '600 hover:bg-yellow-700' : '500 hover:bg-yellow-600'} text-white px-4 py-2 rounded-lg font-medium`;
+            btn.className = `bg-yellow-${isOpponentVisible ? '600 hover:bg-yellow-700' : '500 hover:bg-yellow-600'} text-white px-3 py-1.5 text-sm rounded-lg font-medium`;
         }
 
         // --- Substitution Logic ---
@@ -639,11 +643,11 @@
             
             if (substitutionMode) {
                 btn.textContent = '交代モード終了';
-                btn.className = 'bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium';
+                btn.className = 'bg-orange-600 hover:bg-orange-700 text-white px-3 py-1.5 text-sm rounded-lg font-medium';
                 showSubstitutionInstructions();
             } else {
                 btn.textContent = '選手交代モード';
-                btn.className = 'bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium';
+                btn.className = 'bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 text-sm rounded-lg font-medium';
                 hideSubstitutionInstructions();
             }
         }
@@ -755,7 +759,7 @@
             isDrawingMode = !isDrawingMode;
             const btn = document.getElementById('draw-mode-btn');
             canvas.classList.toggle('active', isDrawingMode);
-            btn.className = `bg-${isDrawingMode ? 'pink-800' : 'pink-600'} hover:bg-pink-700 text-white p-2 rounded-lg font-medium flex items-center justify-center w-12 h-12`;
+            btn.className = `bg-${isDrawingMode ? 'pink-600 hover:bg-pink-700' : 'gray-600 hover:bg-gray-700'} text-white p-2 rounded-lg font-medium flex items-center justify-center w-12 h-12`;
         }
 
         function getMousePos(e) {
