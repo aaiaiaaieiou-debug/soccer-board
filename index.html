@@ -223,7 +223,12 @@
             .player-icon > div {
                 width: 40px !important;
                 height: 40px !important;
-                font-size: 0.6rem !important;
+            }
+             .player-icon > div > span:first-child {
+                font-size: 0.75rem !important; /* Adjust number size for mobile */
+            }
+            .player-icon > div > span:last-child {
+                font-size: 0.875rem !important; /* Adjust name size for mobile */
             }
             .drawing-tools button {
                 width: 40px !important;
@@ -337,12 +342,12 @@
     <div id="playerModal" class="modal">
         <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
             <h2 class="text-xl font-bold text-white mb-4">選手管理</h2>
-            <p class="text-gray-400 text-sm mb-4">各ポジションでリストの最初の方にいる選手がスターターとして自動選出されます。</p>
+            <p class="text-gray-400 text-sm mb-4">リストの背番号が若い順にスターターとして自動選出されます。</p>
             <div class="mb-4"><label class="block text-white text-sm font-bold mb-2">選手一覧</label><div id="playerList" class="max-h-60 overflow-y-auto bg-gray-700 rounded p-3"></div></div>
             <div class="mb-4"><button onclick="showAddPlayerForm()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium w-full mb-2">新しい選手を追加</button></div>
             <div id="playerForm" class="hidden mb-4">
                 <div class="mb-3"><label class="block text-white text-sm font-bold mb-2">選手名</label><input type="text" id="playerName" class="w-full px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></div>
-                <div class="mb-3"><label class="block text-white text-sm font-bold mb-2">ポジション</label><select id="playerPosition" class="w-full px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"><option value="GK">GK</option><option value="DF">DF</option><option value="MF">MF</option><option value="FW">FW</option></select></div>
+                <div class="mb-3"><label class="block text-white text-sm font-bold mb-2">背番号</label><input type="number" id="playerNumber" class="w-full px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></div>
                 <div class="flex gap-2"><button onclick="savePlayer()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex-1">保存</button><button onclick="cancelPlayerForm()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium flex-1">キャンセル</button></div>
             </div>
             <div class="flex justify-end"><button onclick="closePlayerManager()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium">閉じる</button></div>
@@ -370,6 +375,7 @@
         // Substitution State
         let substitutionMode = false;
         let playerToSwapOut = null;
+        let editingPlayer = null;
 
         // Drawing State
         let isDrawingMode = false;
@@ -403,7 +409,18 @@
             if (storedPlayers && Object.keys(JSON.parse(storedPlayers)).length > 0) {
                 players = JSON.parse(storedPlayers);
             } else {
-                players = { 'player_1': { name: '田中', position: 'GK' }, 'player_2': { name: '佐藤', position: 'DF' }, 'player_3': { name: '鈴木', position: 'DF' }, 'player_4': { name: '高橋', position: 'DF' }, 'player_5': { name: '渡辺', position: 'MF' }, 'player_6': { name: '山田', position: 'MF' }, 'player_7': { name: '中村', position: 'MF' }, 'player_8': { name: '伊藤', position: 'MF' }, 'player_9': { name: '小林', position: 'FW' }, 'player_10': { name: '加藤', position: 'FW' } };
+                 players = { 
+                    'player_1': { name: '田中', number: '1' }, 
+                    'player_2': { name: '佐藤', number: '2' }, 
+                    'player_3': { name: '鈴木', number: '3' }, 
+                    'player_4': { name: '高橋', number: '4' }, 
+                    'player_5': { name: '渡辺', number: '5' }, 
+                    'player_6': { name: '山田', number: '6' }, 
+                    'player_7': { name: '中村', number: '7' }, 
+                    'player_8': { name: '伊藤', number: '8' }, 
+                    'player_9': { name: '小林', number: '9' }, 
+                    'player_10': { name: '加藤', number: '10' } 
+                };
                 savePlayersToStorage();
             }
         }
@@ -427,8 +444,7 @@
                 playerDiv.className = 'player-icon';
                 playerDiv.dataset.team = 'home';
                 playerDiv.dataset.player = playerId;
-                playerDiv.dataset.position = player.position;
-                playerDiv.innerHTML = `<div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">${player.position}</div><div class="text-xs">${player.name.substring(0, 4)}</div></div></div>`;
+                playerDiv.innerHTML = `<div class="bg-blue-600 text-white rounded-full w-12 h-12 flex flex-col items-center justify-center font-bold border-2 border-white shadow-lg leading-tight"><span class="text-xs">${player.number}</span><span class="text-sm">${player.name.substring(0, 4)}</span></div>`;
                 fieldContainer.appendChild(playerDiv);
             });
         }
@@ -456,27 +472,32 @@
             const field = document.getElementById('field-container');
             const substitutesContainer = document.getElementById('substitutes');
 
+            // Move all players to the substitutes container first
             Object.keys(players).forEach(playerId => {
                 const playerElement = document.querySelector(`.player-icon[data-player="${playerId}"]`);
                 if (playerElement) {
                     substitutesContainer.appendChild(playerElement);
                     playerElement.classList.remove('absolute');
-                    playerElement.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
+                    playerElement.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex flex-col items-center justify-center font-bold border-2 border-gray-300 shadow-lg leading-tight';
                 }
             });
 
-            const availablePlayerIds = [...Object.keys(players)];
+            // Get player IDs, sort them by number to determine starters
+            const availablePlayerIds = Object.keys(players).sort((a, b) => (parseInt(players[a].number) || 999) - (parseInt(players[b].number) || 999));
             
-            formation.slots.forEach(slot => {
-                const starterId = availablePlayerIds.find(id => players[id].position === slot.role);
-                if (starterId) {
+            // Assign starters based on sorted order
+            formation.slots.forEach((slot, index) => {
+                if (index < availablePlayerIds.length) {
+                    const starterId = availablePlayerIds[index];
                     const starterElement = document.querySelector(`.player-icon[data-player="${starterId}"]`);
-                    field.appendChild(starterElement);
-                    starterElement.classList.add('absolute');
-                    starterElement.style.top = slot.pos.top;
-                    starterElement.style.left = slot.pos.left;
-                    starterElement.firstElementChild.className = 'bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg';
-                    availablePlayerIds.splice(availablePlayerIds.indexOf(starterId), 1);
+                    
+                    if (starterElement) {
+                        field.appendChild(starterElement);
+                        starterElement.classList.add('absolute');
+                        starterElement.style.top = slot.pos.top;
+                        starterElement.style.left = slot.pos.left;
+                        starterElement.firstElementChild.className = 'bg-blue-600 text-white rounded-full w-12 h-12 flex flex-col items-center justify-center font-bold border-2 border-white shadow-lg leading-tight';
+                    }
                 }
             });
 
@@ -710,11 +731,11 @@
             substituteIn.classList.add('absolute');
             substituteIn.style.top = playerOutTop;
             substituteIn.style.left = playerOutLeft;
-            substituteIn.firstElementChild.className = 'bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg';
+            substituteIn.firstElementChild.className = 'bg-blue-600 text-white rounded-full w-12 h-12 flex flex-col items-center justify-center font-bold border-2 border-white shadow-lg leading-tight';
 
             substitutesContainer.appendChild(playerOut);
             playerOut.classList.remove('absolute');
-            playerOut.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
+            playerOut.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex flex-col items-center justify-center font-bold border-2 border-gray-300 shadow-lg leading-tight';
             
             showSubstitutionMessage(`${substituteInName.substring(0,4)} ⇄ ${playerOutName.substring(0,4)}`);
             playerToSwapOut = null;
@@ -855,7 +876,7 @@
                 const player = players[playerId];
                 const playerDiv = document.createElement('div');
                 playerDiv.className = 'flex justify-between items-center p-2 mb-2 bg-gray-600 rounded';
-                playerDiv.innerHTML = `<span class="text-white">${player.name} (${player.position})</span><div><button onclick="editPlayer('${playerId}')" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs mr-1">編集</button><button onclick="deletePlayer('${playerId}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">削除</button></div>`;
+                playerDiv.innerHTML = `<span class="text-white">${player.name} (背番号: ${player.number || '未設定'})</span><div><button onclick="editPlayer('${playerId}')" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs mr-1">編集</button><button onclick="deletePlayer('${playerId}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">削除</button></div>`;
                 playerList.appendChild(playerDiv);
             });
         }
@@ -863,7 +884,7 @@
         function showAddPlayerForm() {
             editingPlayer = null;
             document.getElementById('playerName').value = '';
-            document.getElementById('playerPosition').value = 'MF';
+            document.getElementById('playerNumber').value = '';
             document.getElementById('playerForm').classList.remove('hidden');
         }
 
@@ -871,31 +892,30 @@
             editingPlayer = playerId;
             const player = players[playerId];
             document.getElementById('playerName').value = player.name;
-            document.getElementById('playerPosition').value = player.position;
+            document.getElementById('playerNumber').value = player.number;
             document.getElementById('playerForm').classList.remove('hidden');
         }
         
         function savePlayer() {
             const name = document.getElementById('playerName').value.trim();
-            const position = document.getElementById('playerPosition').value;
+            const number = document.getElementById('playerNumber').value.trim();
             if (!name) {
                 showModalMessage('選手名を入力してください');
                 return;
             }
             if (editingPlayer) {
                 players[editingPlayer].name = name;
-                players[editingPlayer].position = position;
+                players[editingPlayer].number = number;
                 updatePlayerOnBoard(editingPlayer); 
             } else {
                 const newPlayerId = 'player_' + Date.now();
-                players[newPlayerId] = { name: name, position: position };
+                players[newPlayerId] = { name: name, number: number };
                 const playerDiv = document.createElement('div');
                 playerDiv.className = 'player-icon';
                 playerDiv.dataset.team = 'home';
                 playerDiv.dataset.player = newPlayerId;
-                playerDiv.dataset.position = position;
-                playerDiv.innerHTML = `<div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">${position}</div><div class="text-xs">${name.substring(0, 4)}</div></div></div>`;
-                document.getElementById('field-container').appendChild(playerDiv);
+                playerDiv.innerHTML = `<div class="bg-blue-500 text-white rounded-full w-12 h-12 flex flex-col items-center justify-center font-bold border-2 border-gray-300 shadow-lg leading-tight"><span class="text-xs">${number}</span><span class="text-sm">${name.substring(0, 4)}</span></div>`;
+                document.getElementById('substitutes').appendChild(playerDiv);
             }
             
             savePlayersToStorage();
@@ -919,9 +939,10 @@
             const playerElement = document.querySelector(`[data-player="${playerId}"]`);
             if (playerElement) {
                 const player = players[playerId];
-                playerElement.querySelector('.text-xs').textContent = player.name.substring(0, 4);
-                playerElement.querySelector('.font-semibold').textContent = player.position;
-                playerElement.dataset.position = player.position;
+                const icon = playerElement.firstElementChild;
+                if (icon) {
+                     icon.innerHTML = `<span class="text-xs">${player.number}</span><span class="text-sm">${player.name.substring(0, 4)}</span>`;
+                }
             }
         }
         
