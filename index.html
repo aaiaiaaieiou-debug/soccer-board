@@ -48,12 +48,6 @@
             box-shadow: 0 0 15px 5px #facc15; /* yellow glow */
             transform: scale(1.15);
         }
-
-        /* ★修正点: 控え選手を区別するためのスタイル */
-        .player-icon.is-substitute > div {
-            border-color: #facc15 !important; /* yellow-400 */
-            border-width: 4px !important;
-        }
         
         /* Styling for the center circle on the field */
         .center-circle {
@@ -342,11 +336,8 @@
     <!-- Modals -->
     <div id="playerModal" class="modal">
         <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl font-bold text-white">選手管理</h2>
-                <div id="starter-counter" class="text-lg font-bold text-yellow-400">スターター: 0/8</div>
-            </div>
-            <p class="text-gray-400 text-sm mb-4">「スタメン」ボタンで先発選手を8人選んでください。</p>
+            <h2 class="text-xl font-bold text-white mb-4">選手管理</h2>
+            <p class="text-gray-400 text-sm mb-4">各ポジションでリストの最初の方にいる選手がスターターとして自動選出されます。</p>
             <div class="mb-4"><label class="block text-white text-sm font-bold mb-2">選手一覧</label><div id="playerList" class="max-h-60 overflow-y-auto bg-gray-700 rounded p-3"></div></div>
             <div class="mb-4"><button onclick="showAddPlayerForm()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium w-full mb-2">新しい選手を追加</button></div>
             <div id="playerForm" class="hidden mb-4">
@@ -412,7 +403,7 @@
             if (storedPlayers && Object.keys(JSON.parse(storedPlayers)).length > 0) {
                 players = JSON.parse(storedPlayers);
             } else {
-                players = { 'player_1': { name: '田中', position: 'GK', isStarter: true }, 'player_2': { name: '佐藤', position: 'DF', isStarter: true }, 'player_3': { name: '鈴木', position: 'DF', isStarter: true }, 'player_4': { name: '高橋', position: 'DF', isStarter: true }, 'player_5': { name: '渡辺', position: 'MF', isStarter: true }, 'player_6': { name: '山田', position: 'MF', isStarter: true }, 'player_7': { name: '中村', position: 'MF', isStarter: true }, 'player_8': { name: '伊藤', position: 'MF', isStarter: false }, 'player_9': { name: '小林', position: 'FW', isStarter: true }, 'player_10': { name: '加藤', position: 'FW', isStarter: false } };
+                players = { 'player_1': { name: '田中', position: 'GK' }, 'player_2': { name: '佐藤', position: 'DF' }, 'player_3': { name: '鈴木', position: 'DF' }, 'player_4': { name: '高橋', position: 'DF' }, 'player_5': { name: '渡辺', position: 'MF' }, 'player_6': { name: '山田', position: 'MF' }, 'player_7': { name: '中村', position: 'MF' }, 'player_8': { name: '伊藤', position: 'MF' }, 'player_9': { name: '小林', position: 'FW' }, 'player_10': { name: '加藤', position: 'FW' } };
                 savePlayersToStorage();
             }
         }
@@ -437,7 +428,6 @@
                 playerDiv.dataset.team = 'home';
                 playerDiv.dataset.player = playerId;
                 playerDiv.dataset.position = player.position;
-                // ★修正点: isStarterに基づいて名前の色を決定するロジックを削除
                 playerDiv.innerHTML = `<div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg"><div class="text-center leading-tight"><div class="font-semibold">${player.position}</div><div class="text-xs">${player.name.substring(0, 4)}</div></div></div>`;
                 fieldContainer.appendChild(playerDiv);
             });
@@ -466,38 +456,27 @@
             const field = document.getElementById('field-container');
             const substitutesContainer = document.getElementById('substitutes');
 
-            const starterIds = Object.keys(players).filter(id => players[id].isStarter);
-            const substituteIds = Object.keys(players).filter(id => !players[id].isStarter);
-
-            const allPlayersFragment = document.createDocumentFragment();
             Object.keys(players).forEach(playerId => {
                 const playerElement = document.querySelector(`.player-icon[data-player="${playerId}"]`);
-                if(playerElement) allPlayersFragment.appendChild(playerElement);
+                if (playerElement) {
+                    substitutesContainer.appendChild(playerElement);
+                    playerElement.classList.remove('absolute');
+                    playerElement.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
+                }
             });
 
-            const unplacedStarters = [...starterIds];
+            const availablePlayerIds = [...Object.keys(players)];
+            
             formation.slots.forEach(slot => {
-                const starterIndex = unplacedStarters.findIndex(id => players[id].position === slot.role);
-                if (starterIndex !== -1) {
-                    const starterId = unplacedStarters[starterIndex];
-                    const starterElement = allPlayersFragment.querySelector(`[data-player="${starterId}"]`);
+                const starterId = availablePlayerIds.find(id => players[id].position === slot.role);
+                if (starterId) {
+                    const starterElement = document.querySelector(`.player-icon[data-player="${starterId}"]`);
                     field.appendChild(starterElement);
-                    starterElement.classList.remove('is-substitute');
                     starterElement.classList.add('absolute');
                     starterElement.style.top = slot.pos.top;
                     starterElement.style.left = slot.pos.left;
                     starterElement.firstElementChild.className = 'bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-white shadow-lg';
-                    unplacedStarters.splice(starterIndex, 1);
-                }
-            });
-
-            [...substituteIds, ...unplacedStarters].forEach(playerId => {
-                const playerElement = allPlayersFragment.querySelector(`[data-player="${playerId}"]`);
-                 if (playerElement) {
-                    substitutesContainer.appendChild(playerElement);
-                    playerElement.classList.add('is-substitute');
-                    playerElement.classList.remove('absolute');
-                    playerElement.firstElementChild.className = 'bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xs font-bold border-2 border-gray-300 shadow-lg';
+                    availablePlayerIds.splice(availablePlayerIds.indexOf(starterId), 1);
                 }
             });
 
@@ -867,48 +846,20 @@
         function closePlayerManager() {
             document.getElementById('playerModal').classList.remove('show');
             cancelPlayerForm();
-            setFormation(currentFormation); // Apply starter changes when closing modal
         }
 
         function updatePlayerList() {
             const playerList = document.getElementById('playerList');
             playerList.innerHTML = '';
-            const starterCount = Object.values(players).filter(p => p.isStarter).length;
-            document.getElementById('starter-counter').textContent = `スターター: ${starterCount}/8`;
-
             Object.keys(players).forEach(playerId => {
                 const player = players[playerId];
                 const playerDiv = document.createElement('div');
                 playerDiv.className = 'flex justify-between items-center p-2 mb-2 bg-gray-600 rounded';
-                
-                const starterButtonClass = player.isStarter ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-500 hover:bg-gray-600';
-                const starterButtonText = player.isStarter ? '控えへ' : 'スタメンへ';
-
-                playerDiv.innerHTML = `<span class="text-white">${player.name} (${player.position})</span>
-                                       <div>
-                                            <button onclick="toggleStarter('${playerId}')" class="${starterButtonClass} text-white px-2 py-1 rounded text-xs mr-1">${starterButtonText}</button>
-                                            <button onclick="editPlayer('${playerId}')" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs mr-1">編集</button>
-                                            <button onclick="deletePlayer('${playerId}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">削除</button>
-                                       </div>`;
+                playerDiv.innerHTML = `<span class="text-white">${player.name} (${player.position})</span><div><button onclick="editPlayer('${playerId}')" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs mr-1">編集</button><button onclick="deletePlayer('${playerId}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">削除</button></div>`;
                 playerList.appendChild(playerDiv);
             });
         }
         
-        function toggleStarter(playerId) {
-            const player = players[playerId];
-            const starterCount = Object.values(players).filter(p => p.isStarter).length;
-
-            if (!player.isStarter && starterCount >= 8) {
-                showModalMessage('スターターは8人までです。');
-                return;
-            }
-
-            player.isStarter = !player.isStarter;
-            savePlayersToStorage();
-            updatePlayerList();
-            updatePlayerOnBoard(playerId); // Update the visual on the board
-        }
-
         function showAddPlayerForm() {
             editingPlayer = null;
             document.getElementById('playerName').value = '';
@@ -937,7 +888,7 @@
                 updatePlayerOnBoard(editingPlayer); 
             } else {
                 const newPlayerId = 'player_' + Date.now();
-                players[newPlayerId] = { name: name, position: position, isStarter: false };
+                players[newPlayerId] = { name: name, position: position };
                 const playerDiv = document.createElement('div');
                 playerDiv.className = 'player-icon';
                 playerDiv.dataset.team = 'home';
@@ -968,9 +919,7 @@
             const playerElement = document.querySelector(`[data-player="${playerId}"]`);
             if (playerElement) {
                 const player = players[playerId];
-                const nameEl = playerElement.querySelector('.text-xs');
-                nameEl.textContent = player.name.substring(0, 4);
-                nameEl.classList.remove('text-red-500'); // ★修正点: 赤字クラスを削除
+                playerElement.querySelector('.text-xs').textContent = player.name.substring(0, 4);
                 playerElement.querySelector('.font-semibold').textContent = player.position;
                 playerElement.dataset.position = player.position;
             }
